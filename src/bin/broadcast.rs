@@ -84,13 +84,25 @@ impl Node<(), Payload, InjectedPayload> for BroadcastNode {
                         .copied()
                         .partition(|m| known_to_neighbor.contains(m));
                     let mut rng = rand::thread_rng();
-                    let additional_cap = (known_to_neighbor.len() as f64 * 0.1) as usize;
+                    let additional_cap = (10 * known_to_neighbor.len() / 100) as u32;
                     notify_of.extend(already_known.iter().filter(|_| {
                         rng.gen_ratio(
-                            additional_cap.min(already_known.len()) as u32,
+                            additional_cap.min(already_known.len() as u32),
                             already_known.len() as u32,
                         )
                     }));
+                    Message {
+                        src: self.node.clone(),
+                        dst: neighbor.clone(),
+                        body: Body {
+                            id: None,
+                            in_reply_to: None,
+                            payload: Payload::Gossip {
+                                seen: notify_of.clone(),
+                            },
+                        },
+                    }
+                    .send(output)?;
                 }
             }
             Event::Message(input) => {
@@ -116,7 +128,7 @@ impl Node<(), Payload, InjectedPayload> for BroadcastNode {
                         self.known
                             .get_mut(&reply.dst)
                             .expect("msg from unknown node")
-                            .extend(seen);
+                            .extend(seen.iter().copied());
                     }
                     Payload::BroadcastOk | Payload::ReadOk { .. } | Payload::TopologyOk => {}
                 }
