@@ -2,7 +2,7 @@ use anyhow::Context;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{
     collections::{HashMap, HashSet},
-    io::{BufRead, Write},
+    io::{BufRead, StdoutLock, Write},
 };
 
 #[derive(Debug, Clone)]
@@ -72,7 +72,7 @@ pub trait Node<State, Payload, InjectedPayload = ()> {
     fn step(
         &mut self,
         input: Event<Payload, InjectedPayload>,
-        output: &mut impl Write,
+        output: &mut StdoutLock,
     ) -> anyhow::Result<()>;
 }
 
@@ -176,14 +176,4 @@ pub enum BroadcastPayload {
     ReadOk {
         messages: HashSet<MessageID>,
     },
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(tag = "type")]
-#[serde(rename_all = "snake_case")]
-pub enum EchoPayload {
-    /// The message to be echoed back
-    Echo { echo: String },
-    /// The response to an echo request
-    EchoOk { echo: String },
 }
