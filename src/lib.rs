@@ -143,9 +143,9 @@ where
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Init {
     /// The current node's ID
-    node_id: NodeID,
+    pub node_id: NodeID,
     /// The IDs of all other nodes in the network
-    node_ids: Vec<NodeID>,
+    pub node_ids: Vec<NodeID>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
