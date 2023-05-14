@@ -1,8 +1,8 @@
 use rasengan::*;
 
-use anyhow::Context;
+
 use serde::{Deserialize, Serialize};
-use std::io::{StdoutLock, Write};
+use std::io::{StdoutLock};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
