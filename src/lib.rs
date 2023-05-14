@@ -99,7 +99,7 @@ where
         panic!("first message should be init");
     };
     let mut node: NodeType =
-        Node::from_init(init_state, init, tx.clone()).context("node initilization failed")?;
+        Node::from_init(init_state, init, tx.clone()).context("node initialization failed")?;
 
     let reply = Message {
         src: init_msg.dst,
@@ -187,8 +187,3 @@ pub enum EchoPayload {
     /// The response to an echo request
     EchoOk { echo: String },
 }
-
-// fn main() {
-//     let stdin = std::io::stdin().lock();
-//     let stdout = std::io::stdout().lock();
-// }
