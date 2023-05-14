@@ -81,7 +81,6 @@ impl Node<(), Payload, InjectedPayload> for BroadcastNode {
                     let (already_known, mut notify_of): (HashSet<_>, HashSet<_>) = self
                         .messages
                         .iter()
-                        .copied()
                         .partition(|m| known_to_neighbor.contains(m));
                     let mut rng = rand::thread_rng();
                     let additional_cap = (10 * known_to_neighbor.len() / 100) as u32;
@@ -128,7 +127,8 @@ impl Node<(), Payload, InjectedPayload> for BroadcastNode {
                         self.known
                             .get_mut(&reply.dst)
                             .expect("msg from unknown node")
-                            .extend(seen.iter().copied());
+                            .extend(&seen);
+                        self.messages.extend(seen);
                     }
                     Payload::BroadcastOk | Payload::ReadOk { .. } | Payload::TopologyOk => {}
                 }
